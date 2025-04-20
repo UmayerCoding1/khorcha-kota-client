@@ -1,6 +1,6 @@
 import React from "react";
 
-const ExpenseTable = () => {
+const ExpenseTable = ({data}) => {
 //   const tableData = [1, 2, 3, 4, 5, 6];
   const currentDate = new Date();
   const options = {

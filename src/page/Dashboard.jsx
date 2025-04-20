@@ -5,13 +5,16 @@ import {
   SquareChevronLeft,
   SquareChevronRight,
   LogOut,
+  ListCheck
 } from "lucide-react";
 import Logo from "../components/Logo";
 import { NavLink, Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const {user} = useAuth();
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -32,12 +35,12 @@ const Dashboard = () => {
         <div className="flex items-center relative">
           <img
             className="w-14 h-14 rounded-full"
-            src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
+            src={user && user.avatar ? user?.avatar : "https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"}
             alt="avatar"
           />
 
           <div className="hidden lg:block ml-2">
-            <h1 className="text-sm font-semibold ">John Doe</h1>
+            <h1 className="text-sm font-semibold ">{user?.fullname}</h1>
             <p className="text-xs text-gray-500">
               <span className="text-green-600">Online</span>
             </p>
@@ -65,6 +68,7 @@ const Dashboard = () => {
           <ul className="mt-6 space-y-4 ">
             <NavLink onClick={toggleDrawer} to={'/'} className="hover:text-gray-300 cursor-pointer flex items-center gap-2 text-xl font-medium"><LayoutDashboard/> Home</NavLink> <br />
             <NavLink onClick={toggleDrawer} to={'/add-expense'} className="hover:text-gray-300 cursor-pointer flex items-center gap-2 text-xl font-medium"><CirclePlus /> Add expense</NavLink> <br />
+            <NavLink onClick={toggleDrawer} to={'/expense-list'} className="hover:text-gray-300 cursor-pointer flex items-center gap-2 text-xl font-medium"><ListCheck />Expense list</NavLink> <br />
             <li className="text-red-500 cursor-pointer flex items-center gap-2 text-xl font-medium"><LogOut /> Logout</li>
           </ul>
         </div>

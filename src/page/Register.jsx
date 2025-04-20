@@ -1,23 +1,41 @@
 import React from "react";
 import Logo from "../components/Logo";
 import loginBg from "../assets/login-bg.avif";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
-    const [user, setUser] = React.useState({
-        fullname: "",
-        username: "",
-        email: "",
-        password: "",
-    });
+  const [user, setUser] = React.useState({
+    fullname: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+  const { userRegister } = useAuth();
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(user);
-        
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    userRegister(user.fullname, user.username, user.email, user.password)
+      .then((res) => {
+        if (res.data.success) {
+          toast.success(res.data.message, { duration: 1000 });
+
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message, { duration: 1000 });
+      });
+  };
   return (
-    <div style={{ backgroundImage: `url(${loginBg})` }} className="bg-cover bg-center ">
+    <div
+      style={{ backgroundImage: `url(${loginBg})` }}
+      className="bg-cover bg-center "
+    >
       <Logo />
 
       <div className="flex justify-center items-center h-screen bg-cover bl">
@@ -25,11 +43,14 @@ const Register = () => {
           <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="fullname">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="fullname"
+              >
                 Fullname
               </label>
               <input
-               onChange={(e) => setUser({ ...user, fullname: e.target.value })}
+                onChange={(e) => setUser({ ...user, fullname: e.target.value })}
                 type="text"
                 id="fullname"
                 placeholder="Enter your fullname"
@@ -38,7 +59,10 @@ const Register = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="username">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="username"
+              >
                 Username
               </label>
               <input
@@ -51,7 +75,10 @@ const Register = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="email"
+              >
                 Email
               </label>
               <input
@@ -64,11 +91,14 @@ const Register = () => {
               />
             </div>
             <div className="mb-6">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="password">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="password"
+              >
                 Password
               </label>
               <input
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
                 type="password"
                 id="password"
                 placeholder="Enter your password"
@@ -82,9 +112,15 @@ const Register = () => {
             >
               Register
             </button>
-            <p className="text-center p-2 font-medium">You have already account? <Link to={'/login'} className="text-[#2254e9] ml-2">Login hear</Link></p>
+            <p className="text-center p-2 font-medium">
+              You have already account?{" "}
+              <Link to={"/login"} className="text-[#2254e9] ml-2">
+                Login hear
+              </Link>
+            </p>
           </form>
         </div>
+        <Toaster containerStyle={false} position="top-right" />
       </div>
     </div>
   );

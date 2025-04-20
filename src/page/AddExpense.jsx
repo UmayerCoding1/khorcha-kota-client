@@ -5,28 +5,64 @@ const AddExpense = () => {
     {
       itemname: "",
       itemprice: "",
+      date: "",
     },
   ]);
 
   const handleAddFild = () => {
-    setItems([...items, {
+    setItems([
+      ...items,
+      {
         itemname: "",
         itemprice: "",
-      }],)
+        date: "",
+      },
+    ]);
   };
 
-
-  const handleChange = (index,field,value) => {
+  const handleChange = (index, field, value) => {
     const updateItems = [...items];
     updateItems[index][field] = value;
 
     setItems(updateItems);
-  }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('all inp value', items );
-    
+    console.log("all inp value", items);
   };
+  const essentialItemsBN = [
+    "চাল",
+    "ডাল",
+    "তেল",
+    "লবণ",
+    "চিনি",
+    "ময়দা",
+    "দুধ",
+    "ডিম",
+    "পাউরুটি",
+    "আলু",
+    "পেঁয়াজ",
+    "রসুন",
+    "সবজি",
+    "ফল",
+    "মাংস",
+    "মাছ",
+    "চা",
+    "কফি",
+    "সাবান",
+    "শ্যাম্পু",
+    "টুথপেস্ট",
+    "টয়লেট পেপার",
+    "কাপড় কাচার গুঁড়া",
+    "ডিটারজেন্ট",
+    "গ্যাস সিলিন্ডার",
+    "দিয়াশলাই",
+    "মসলা",
+    "স্ন্যাকস",
+    "বিস্কুট",
+    "পানির বোতল"
+  ];
+  
   return (
     <div className="p-2">
       <Link
@@ -52,11 +88,18 @@ const AddExpense = () => {
                 <input
                   value={item.itemname}
                   onChange={(e) => {
-                    handleChange(inx,'itemname', e.target.value)
+                    handleChange(inx, "itemname", e.target.value);
                   }}
+                  list="itemSuggestions"
                   type="text"
                   className="outline-none border w-full h-10 pl-2"
+                  required
                 />
+                <datalist className="h-40" id="itemSuggestions">
+                  {essentialItemsBN.map((item) => (
+                  <option value={`${item}`} />
+                  ))}
+                </datalist>
               </div>
               <div className="w-[50%]">
                 <label className="text-sm font-medium" htmlFor="price">
@@ -67,9 +110,25 @@ const AddExpense = () => {
                   type="text"
                   value={item.itemprice}
                   onChange={(e) => {
-                    handleChange(inx,'itemprice', e.target.value)
+                    handleChange(inx, "itemprice", e.target.value);
                   }}
                   className="outline-none border w-full h-10 pl-2"
+                  required
+                />
+              </div>
+              <div className="w-[50%]">
+                <label className="text-sm font-medium" htmlFor="price">
+                  Expense date
+                </label>
+                <br />
+                <input
+                  type="date"
+                  value={item.date}
+                  onChange={(e) => {
+                    handleChange(inx, "date", e.target.value);
+                  }}
+                  className="outline-none border w-full h-10 pl-2"
+                  required
                 />
               </div>
             </div>
@@ -77,7 +136,7 @@ const AddExpense = () => {
 
           <div className="flex items-center justify-between  mt-2">
             <button
-            onClick={() => handleAddFild()}
+              onClick={() => handleAddFild()}
               type="button"
               className="bg-emerald-500 p-2 px-4 rounded-xl text- text-white mt-5 cursor-pointer"
             >

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import BasicPie from "../components/PaiChart";
 import ExpenseTable from "../components/ExpenseTable";
 import { Search, XCircle } from "lucide-react";
+import useAuth from "../hooks/useAuth";
+import useGetBudget from "../hooks/useGetBudget";
 const Home = () => {
   const [openAddBudget, setOpenAddBudget] = useState(false);
-  const budget = false;
+  // const budget = false;
   const currentDate = new Date();
   const options = {
     weekday: "short",
@@ -14,20 +16,24 @@ const Home = () => {
   };
   const formattedDate = currentDate.toLocaleDateString("en-US", options);
   const month = currentDate.toLocaleString("default", { month: "long" });
-
+  const {user} = useAuth();
+  const  [budget,budgetRefetch] = useGetBudget();
+  console.log(budget);
+  
+  
   const data = [
     { id: 0, value: 100, label: "series A" },
     { id: 1, value: 15, label: "series B" },
     { id: 2, value: 20, label: "series C" },
-    { id: 0, value: 100, label: "series A" },
-    { id: 1, value: 15, label: "series B" },
-    { id: 2, value: 20, label: "series C" },
-    { id: 0, value: 100, label: "series A" },
-    { id: 1, value: 15, label: "series B" },
-    { id: 2, value: 20, label: "series C" },
-    { id: 0, value: 100, label: "series A" },
-    { id: 1, value: 15, label: "series B" },
-    { id: 2, value: 20, label: "series C" },
+    // { id: 0, value: 100, label: "series A" },
+    // { id: 1, value: 15, label: "series B" },
+    // { id: 2, value: 20, label: "series C" },
+    // { id: 0, value: 100, label: "series A" },
+    // { id: 1, value: 15, label: "series B" },
+    // { id: 2, value: 20, label: "series C" },
+    // { id: 0, value: 100, label: "series A" },
+    // { id: 1, value: 15, label: "series B" },
+    // { id: 2, value: 20, label: "series C" },
     // { id: 0, value: 100, label: "series A" },
     // { id: 1, value: 15, label: "series B" },
     // { id: 2, value: 20, label: "series C" },
@@ -35,6 +41,11 @@ const Home = () => {
     // { id: 1, value: 15, label: "series B" },
     // { id: 2, value: 20, label: "series C" },
   ];
+
+
+  const handleAddBudget =async () => {
+    budgetRefetch();
+  }
 
   useEffect(() => {
     if (openAddBudget) {
@@ -80,7 +91,7 @@ const Home = () => {
             <div className="flex items-center justify-between lg:gap-20 mt-5">
               <img
                 className="w-40 h-40 rounded-full"
-                src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
+                src={user && user.avatar ? user?.avatar : "https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"}
                 alt="avatar"
               />
 
@@ -89,14 +100,14 @@ const Home = () => {
                   <p className="text-sm tracking-widest text-gray-400 font-orbitron">
                     Total amount
                   </p>
-                  <h2 className="text-3xl mt-1 font-semibold">৳20000</h2>
+                  <h2 className="text-3xl mt-1 font-semibold"> ৳{budget?.budget}</h2>
                 </div>
 
                 <div>
                   <p className="text-sm tracking-widest text-gray-400 font-orbitron">
                     Available Amount
                   </p>
-                  <h2 className="text-3xl mt-1 font-semibold">৳ 15600</h2>
+                  <h2 className="text-3xl mt-1 font-semibold">৳{budget?.remainingBudget}</h2>
                 </div>
               </div>
             </div>
@@ -168,7 +179,7 @@ const Home = () => {
                type="text" 
               placeholder="Enter your budget " />
 
-              <button className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer">Add Budget</button>
+              <button onClick={() => handleAddBudget()} className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer">Add Budget</button>
             </div>
           </div>
         </div>

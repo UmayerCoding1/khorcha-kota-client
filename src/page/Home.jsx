@@ -1,0 +1,178 @@
+import React, { useEffect, useState } from "react";
+import BasicPie from "../components/PaiChart";
+import ExpenseTable from "../components/ExpenseTable";
+import { Search, XCircle } from "lucide-react";
+const Home = () => {
+  const [openAddBudget, setOpenAddBudget] = useState(false);
+  const budget = false;
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  const formattedDate = currentDate.toLocaleDateString("en-US", options);
+  const month = currentDate.toLocaleString("default", { month: "long" });
+
+  const data = [
+    { id: 0, value: 100, label: "series A" },
+    { id: 1, value: 15, label: "series B" },
+    { id: 2, value: 20, label: "series C" },
+    { id: 0, value: 100, label: "series A" },
+    { id: 1, value: 15, label: "series B" },
+    { id: 2, value: 20, label: "series C" },
+    { id: 0, value: 100, label: "series A" },
+    { id: 1, value: 15, label: "series B" },
+    { id: 2, value: 20, label: "series C" },
+    { id: 0, value: 100, label: "series A" },
+    { id: 1, value: 15, label: "series B" },
+    { id: 2, value: 20, label: "series C" },
+    // { id: 0, value: 100, label: "series A" },
+    // { id: 1, value: 15, label: "series B" },
+    // { id: 2, value: 20, label: "series C" },
+    // { id: 0, value: 100, label: "series A" },
+    // { id: 1, value: 15, label: "series B" },
+    // { id: 2, value: 20, label: "series C" },
+  ];
+
+  useEffect(() => {
+    if (openAddBudget) {
+      document.body.style.overflow = "hidden";
+    }
+  }, [openAddBudget]);
+  return (
+    <div className="lg:flex gap-10 lg:p-10 lg:pt-0 ">
+      <div className="lg:w-[70%]">
+        <div className="mb-5 px-3 w-full lg:hidden">
+          {budget ? (
+            <button
+              className={`w-full bg-gray-500 text-gray-400 h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+            >
+              {" "}
+              Budget already added
+            </button>
+          ) : (
+            <button
+              onClick={() => setOpenAddBudget(true)}
+              className={`w-full bg-black text-white h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+            >
+              Add Budget
+            </button>
+          )}
+
+          <div className="bg-[#FA83B4] w-full text-center p-4 rounded-lg">
+            <h2 className="text-3xl font-semibold font-outfit">Platfron use</h2>
+            <h3 className="font-medium">
+              <span>Total year: 0</span> <br />
+              <span>Total month: 4</span>
+            </h3>
+          </div>
+        </div>
+        <div className="lg:flex  justify-between bg-white mb-2  w-full">
+          <div className="bg-black text-white p-5 rounded-md mb-7 lg:mb-0 h-[180px]">
+            <p className="text-sm text-gray-500 tracking-widest font-orbitron">
+              {formattedDate}
+            </p>
+
+            <div className="flex items-center justify-between gap-20 mt-5">
+              <img
+                className="w-40 h-40 rounded-full"
+                src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
+                alt="avatar"
+              />
+
+              <div className="flex flex-col items-center justify-between gap-10">
+                <div>
+                  <p className="text-sm tracking-widest text-gray-400 font-orbitron">
+                    Total amount
+                  </p>
+                  <h2 className="text-3xl mt-1 font-semibold">৳20000</h2>
+                </div>
+
+                <div>
+                  <p className="text-sm tracking-widest text-gray-400 font-orbitron">
+                    Available Amount
+                  </p>
+                  <h2 className="text-3xl mt-1 font-semibold">৳ 15600</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="max-h-[200px] overflow-auto my-5">
+            <BasicPie data={data} />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between p-3">
+            <h1 className="text-xl font-medium">
+              Expense list{" "}
+              <span className="text-sm text-gray-500">({month} mounth)</span>
+            </h1>
+
+            <div className="flex items-center justify-between border-2 w-72 border-black/50  rounded-md px-1">
+              <input
+                type="text"
+                className="outline-none p-2  w-full placeholder:text-xs"
+                placeholder={`Only ${month}'s day (12/3/20225)`}
+              />
+              <Search className="text-gray-500" size={14} />
+            </div>
+          </div>
+
+          <div className="max-h-[300px] overflow-scroll">
+            <ExpenseTable />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-l-2 border-gray-200 px-3 w-[30%] hidden lg:block">
+        {budget ? (
+          <button
+            className={`w-full bg-gray-500 text-gray-400 h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+          >
+            {" "}
+            Budget already added
+          </button>
+        ) : (
+          <button
+            onClick={() => setOpenAddBudget(true)}
+            className={`w-full bg-black text-white h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+          >
+            Add Budget
+          </button>
+        )}
+
+        <div className="bg-[#FA83B4] w-full text-center p-4 rounded-lg">
+          <h2 className="text-3xl font-semibold font-outfit">Platfron use</h2>
+          <h3 className="font-medium">
+            <span>Total year: 0</span> <br />
+            <span>Total month: 4</span>
+          </h3>
+        </div>
+      </div>
+
+      {openAddBudget && (
+        <div className="absolute w-full h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
+          <div className="bg-white w-[300px] h-[170px] rounded-lg relative">
+            <XCircle onClick={() => setOpenAddBudget(false)} className="text-black absolute top-2 right-1 cursor-pointer" />
+
+            <div className="mt-10 p-5">
+              <h2 className="text-2xl font-semibold text-center mb-5">Add your budget</h2>
+              <input
+              className="outline-none border  w-full rounded-lg p-2 h-10"
+               type="text" 
+              placeholder="Enter your budget " />
+
+              <button className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer">Add Budget</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Home;

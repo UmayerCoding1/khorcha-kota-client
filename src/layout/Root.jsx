@@ -3,10 +3,13 @@ import Dashboard from '../page/Dashboard';
 import LandingPage from '../page/LandingPage';
 
 const Root = () => {
-    const user = false
+    const user = true;
+    // const user = false;
     return (
-        <div className=''>
-            {user ? <Dashboard /> : <LandingPage />}
+        <div className='font-poppins'>
+            {user ?<>
+                <Dashboard />
+            </> : <LandingPage />}
         </div>
     );
 };

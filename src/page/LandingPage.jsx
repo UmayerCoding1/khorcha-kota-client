@@ -4,7 +4,7 @@ import Hero from '../components/Hero';
 
 const LandingPage = () => {
     return (
-        <div className='min-h-screen flex flex-col justify-between'>
+        <div className='min-h-screen flex flex-col justify-between '>
             <Navbar />
             <Hero />
         

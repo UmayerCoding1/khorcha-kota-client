@@ -12,7 +12,7 @@ const ExpenseTable = () => {
 
   const formetDate = currentDate.toLocaleDateString("en-US", options);
   return (
-    <table className="w-full text-center border border-black rounded-lg max-h-[450px] overflow-scroll">
+    <table className="w-full text-sm text-center border border-black rounded-lg max-h-[450px] overflow-scroll">
   <thead>
     <tr className="bg-gray-600  text-white font-semibold">
       <th className="border border-black px-4 py-2">Date</th>

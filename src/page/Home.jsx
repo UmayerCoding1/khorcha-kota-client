@@ -38,7 +38,9 @@ const Home = () => {
 
   useEffect(() => {
     if (openAddBudget) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";   
+    }else{
+      document.body.style.overflow = ''
     }
   }, [openAddBudget]);
   return (
@@ -70,12 +72,12 @@ const Home = () => {
           </div>
         </div>
         <div className="lg:flex  justify-between bg-white mb-2  w-full">
-          <div className="bg-black text-white p-5 rounded-md mb-7 lg:mb-0 h-[180px]">
+          <div className="bg-black text-white p-5 rounded-md mb-7 lg:mb-0 lg:h-[180px]">
             <p className="text-sm text-gray-500 tracking-widest font-orbitron">
               {formattedDate}
             </p>
 
-            <div className="flex items-center justify-between gap-20 mt-5">
+            <div className="flex items-center justify-between lg:gap-20 mt-5">
               <img
                 className="w-40 h-40 rounded-full"
                 src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
@@ -106,10 +108,10 @@ const Home = () => {
         </div>
 
         <div>
-          <div className="flex items-center justify-between p-3">
+          <div className="flex flex-col lg:flex-row items-center justify-between p-3">
             <h1 className="text-xl font-medium">
               Expense list{" "}
-              <span className="text-sm text-gray-500">({month} mounth)</span>
+             <span className="text-sm text-blue-500">View all</span>
             </h1>
 
             <div className="flex items-center justify-between border-2 w-72 border-black/50  rounded-md px-1">
@@ -156,7 +158,7 @@ const Home = () => {
 
       {openAddBudget && (
         <div className="absolute w-full h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
-          <div className="bg-white w-[300px] h-[170px] rounded-lg relative">
+          <div className="bg-white w-[300px] lg:h-[170px] rounded-lg relative">
             <XCircle onClick={() => setOpenAddBudget(false)} className="text-black absolute top-2 right-1 cursor-pointer" />
 
             <div className="mt-10 p-5">

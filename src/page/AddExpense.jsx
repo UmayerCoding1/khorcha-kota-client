@@ -1,11 +1,100 @@
-import React from 'react';
-
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 const AddExpense = () => {
-    return (
-        <div>
-            add expense
-        </div>
-    );
+  const [items, setItems] = useState([
+    {
+      itemname: "",
+      itemprice: "",
+    },
+  ]);
+
+  const handleAddFild = () => {
+    setItems([...items, {
+        itemname: "",
+        itemprice: "",
+      }],)
+  };
+
+
+  const handleChange = (index,field,value) => {
+    const updateItems = [...items];
+    updateItems[index][field] = value;
+
+    setItems(updateItems);
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('all inp value', items );
+    
+  };
+  return (
+    <div className="p-2">
+      <Link
+        to={"/expense-list"}
+        className="bg-primary p-2  rounded-lg text-white font-medium text-sm"
+      >
+        Expense list
+      </Link>
+      <div className="flex flex-col items-center justify-center mt-10">
+        <h2 className="text-3xl font-semibold">Add new expense</h2>
+
+        <form
+          onSubmit={handleSubmit}
+          className="border p-4 mt-5 rounded-lg w-[400px]"
+        >
+          {items.map((item, inx) => (
+            <div key={inx} className="flex items-center justify-between gap-2">
+              <div className="w-[50%]">
+                <label className="text-sm font-medium" htmlFor="name">
+                  Item name
+                </label>
+                <br />
+                <input
+                  value={item.itemname}
+                  onChange={(e) => {
+                    handleChange(inx,'itemname', e.target.value)
+                  }}
+                  type="text"
+                  className="outline-none border w-full h-10 pl-2"
+                />
+              </div>
+              <div className="w-[50%]">
+                <label className="text-sm font-medium" htmlFor="price">
+                  Item price
+                </label>
+                <br />
+                <input
+                  type="text"
+                  value={item.itemprice}
+                  onChange={(e) => {
+                    handleChange(inx,'itemprice', e.target.value)
+                  }}
+                  className="outline-none border w-full h-10 pl-2"
+                />
+              </div>
+            </div>
+          ))}
+
+          <div className="flex items-center justify-between  mt-2">
+            <button
+            onClick={() => handleAddFild()}
+              type="button"
+              className="bg-emerald-500 p-2 px-4 rounded-xl text- text-white mt-5 cursor-pointer"
+            >
+              +
+            </button>
+
+            <button
+              className="bg-primary   py-3 px-5 rounded-lg text-sm text-white font-medium cursor-pointer "
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default AddExpense;

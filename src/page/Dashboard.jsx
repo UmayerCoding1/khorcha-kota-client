@@ -70,21 +70,21 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="w-full  bg-black lg:hidden fixed bottom-[-1px] left-0 z-10 flex items-center justify-between p-6 shadow-lg">
+      <div className="w-full  bg-black lg:hidden fixed bottom-[-1px] left-0 z-10 flex items-center justify-between p-2 shadow-lg">
         <Link
           to={"/"}
-          className="flex flex-col items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center lg:gap-1"
         >
-          <LayoutDashboard className="text-white w-10 h-10 cursor-pointer" />
+          <LayoutDashboard className="text-white  cursor-pointer" />
           <p className="text-white font-semibold">Home</p>
         </Link>
 
         <Link to={'/add-expense'} className="flex flex-col items-center justify-center gap-1">
-          <CirclePlus className="text-white w-10 h-10 cursor-pointer" />
+          <CirclePlus className="text-white cursor-pointer" />
           <p className="text-white font-semibold">Add expense</p>
         </Link>
         <div className="flex flex-col items-center justify-center gap-1">
-          <LogOut className="text-red-500 w-10 h-10 cursor-pointer" />
+          <LogOut className="text-red-500 cursor-pointer" />
           <p className="text-red-500 font-semibold">Logout</p>
         </div>
       </div>

@@ -1,12 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import BasicPie from "../components/PaiChart";
 import ExpenseTable from "../components/ExpenseTable";
-import { Search, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import useGetBudget from "../hooks/useGetBudget";
+import useSecureApi from "../hooks/useSecureApi";
+import toast, { Toaster } from "react-hot-toast";
+import useGetExpense from "../hooks/useGetExpense";
+import { Link } from "react-router-dom";
+import Search from "../components/Search";
+import AverageCount from "../components/AverageCount";
 const Home = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [openAddBudget, setOpenAddBudget] = useState(false);
-  // const budget = false;
+  const [openAddMoreBudget, setOpenAddMoreBudget] = useState(false);
+  const [budgetAmount, setBudgetAmount] = useState(0);
+
   const currentDate = new Date();
   const options = {
     weekday: "short",
@@ -16,55 +25,87 @@ const Home = () => {
   };
   const formattedDate = currentDate.toLocaleDateString("en-US", options);
   const month = currentDate.toLocaleString("default", { month: "long" });
-  const {user} = useAuth();
-  const  [budget,budgetRefetch] = useGetBudget();
-  console.log(budget);
-  
-  
-  const data = [
-    { id: 0, value: 100, label: "series A" },
-    { id: 1, value: 15, label: "series B" },
-    { id: 2, value: 20, label: "series C" },
-    // { id: 0, value: 100, label: "series A" },
-    // { id: 1, value: 15, label: "series B" },
-    // { id: 2, value: 20, label: "series C" },
-    // { id: 0, value: 100, label: "series A" },
-    // { id: 1, value: 15, label: "series B" },
-    // { id: 2, value: 20, label: "series C" },
-    // { id: 0, value: 100, label: "series A" },
-    // { id: 1, value: 15, label: "series B" },
-    // { id: 2, value: 20, label: "series C" },
-    // { id: 0, value: 100, label: "series A" },
-    // { id: 1, value: 15, label: "series B" },
-    // { id: 2, value: 20, label: "series C" },
-    // { id: 0, value: 100, label: "series A" },
-    // { id: 1, value: 15, label: "series B" },
-    // { id: 2, value: 20, label: "series C" },
-  ];
+  const year = currentDate.toLocaleString("default", { year: "numeric" });
+  const { user } = useAuth();
+  const [budget, budgetRefetch] = useGetBudget();
+  const secureApi = useSecureApi();
+  const [expenses] = useGetExpense(searchValue);
 
+  const memoizedExpenses = useMemo(() => expenses, [expenses]);
 
-  const handleAddBudget =async () => {
+  const handleAddBudget = async () => {
+    const budgetData = {
+      userId: user?._id,
+      mouth: month.toLowerCase(),
+      year: year,
+      budget: budgetAmount,
+    };
+
+    try {
+      const res = await secureApi.post("/add-budget", budgetData);
+      if (res.data.success) {
+        setOpenAddBudget(false);
+        setBudgetAmount(0);
+        toast.success(res.data.message, { duration: 1000 });
+      }
+    } catch (error) {
+      console.log(error);
+    }
     budgetRefetch();
-  }
+  };
+
+  const handleAddMoreBudget = async () => {
+    const nextBudgetData = {
+      budgetId: budget._id,
+      nextBudget: budgetAmount,
+    };
+
+    try {
+      const res = await secureApi.put("/next-budget", nextBudgetData);
+      console.log(res.data);
+      if (res.data.success) {
+        setOpenAddMoreBudget(false);
+        setBudgetAmount(0);
+        toast.success(res.data.message, { duration: 1000 });
+        budgetRefetch();
+      }
+
+      if (!res.data.success) {
+        toast.error(res.data.message, { duration: 100 });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message, { duration: 1000 });
+    }
+  };
+
+  const handleFindSearchValue = (value) => {
+    setSearchValue(value);
+  };
 
   useEffect(() => {
-    if (openAddBudget) {
-      document.body.style.overflow = "hidden";   
-    }else{
-      document.body.style.overflow = ''
+    if (openAddBudget || openAddMoreBudget) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
-  }, [openAddBudget]);
+  }, [openAddBudget, openAddMoreBudget]);
+
+  if (!memoizedExpenses) {
+    return <p>Loading .. .. .</p>;
+  }
   return (
     <div className="lg:flex gap-10 lg:p-10 lg:pt-0 ">
       <div className="lg:w-[70%]">
         <div className="mb-5 px-3 w-full lg:hidden">
           {budget ? (
-            <button
-              className={`w-full bg-gray-500 text-gray-400 h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
-            >
-              {" "}
-              Budget already added
-            </button>
+             <button
+             onClick={() => setOpenAddMoreBudget(true)}
+             className={`w-full bg-black text-white h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+           >
+             {" "}
+             Add more buget
+           </button>
           ) : (
             <button
               onClick={() => setOpenAddBudget(true)}
@@ -81,6 +122,10 @@ const Home = () => {
               <span>Total month: 4</span>
             </h3>
           </div>
+
+          <div className=" max-h-[200px] overflow-auto ">
+          <AverageCount expenses={memoizedExpenses} />
+        </div>
         </div>
         <div className="lg:flex  justify-between bg-white mb-2  w-full">
           <div className="bg-black text-white p-5 rounded-md mb-7 lg:mb-0 lg:h-[180px]">
@@ -91,7 +136,11 @@ const Home = () => {
             <div className="flex items-center justify-between lg:gap-20 mt-5">
               <img
                 className="w-40 h-40 rounded-full"
-                src={user && user.avatar ? user?.avatar : "https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"}
+                src={
+                  user && user.avatar
+                    ? user?.avatar
+                    : "https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
+                }
                 alt="avatar"
               />
 
@@ -100,21 +149,42 @@ const Home = () => {
                   <p className="text-sm tracking-widest text-gray-400 font-orbitron">
                     Total amount
                   </p>
-                  <h2 className="text-3xl mt-1 font-semibold"> ৳{budget?.budget}</h2>
+                  <h2
+                    className={`${
+                      budget ? "text-3xl" : "text-xs"
+                    } mt-1 font-semibold`}
+                  >
+                    {budget ? `৳${budget?.budget}` : "No budget"}
+                  </h2>
                 </div>
 
                 <div>
                   <p className="text-sm tracking-widest text-gray-400 font-orbitron">
                     Available Amount
                   </p>
-                  <h2 className="text-3xl mt-1 font-semibold">৳{budget?.remainingBudget}</h2>
+                  <h2
+                    className={`${
+                      budget ? "text-3xl" : "text-xs"
+                    } mt-1 font-semibold`}
+                  >
+                    {" "}
+                    {budget ? (
+                      budget.remainingBudget <= 0 ? (
+                        <p className="text-red-500 text-lg">Budget finished</p>
+                      ) : (
+                        `৳${budget?.remainingBudget}`
+                      )
+                    ) : (
+                      "No available amount"
+                    )}
+                  </h2>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="max-h-[200px] overflow-auto my-5">
-            <BasicPie data={data} />
+            <BasicPie data={expenses} />
           </div>
         </div>
 
@@ -122,21 +192,16 @@ const Home = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between p-3">
             <h1 className="text-xl font-medium">
               Expense list{" "}
-             <span className="text-sm text-blue-500">View all</span>
+              <Link to={"/expense-list"} className="text-sm text-blue-500">
+                View all
+              </Link>
             </h1>
 
-            <div className="flex items-center justify-between border-2 w-72 border-black/50  rounded-md px-1">
-              <input
-                type="text"
-                className="outline-none p-2  w-full placeholder:text-xs"
-                placeholder={`Only ${month}'s day (12/3/20225)`}
-              />
-              <Search className="text-gray-500" size={14} />
-            </div>
+            <Search action={handleFindSearchValue} />
           </div>
 
           <div className="max-h-[300px] overflow-scroll">
-            <ExpenseTable />
+            <ExpenseTable data={expenses} />
           </div>
         </div>
       </div>
@@ -144,10 +209,11 @@ const Home = () => {
       <div className="border-l-2 border-gray-200 px-3 w-[30%] hidden lg:block">
         {budget ? (
           <button
-            className={`w-full bg-gray-500 text-gray-400 h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+            onClick={() => setOpenAddMoreBudget(true)}
+            className={`w-full bg-black text-white h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
           >
             {" "}
-            Budget already added
+            Add more buget
           </button>
         ) : (
           <button
@@ -165,25 +231,77 @@ const Home = () => {
             <span>Total month: 4</span>
           </h3>
         </div>
+
+        <div className=" max-h-[400px] overflow-auto ">
+          <AverageCount expenses={memoizedExpenses} />
+        </div>
       </div>
 
       {openAddBudget && (
         <div className="absolute w-full h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
           <div className="bg-white w-[300px] lg:h-[170px] rounded-lg relative">
-            <XCircle onClick={() => setOpenAddBudget(false)} className="text-black absolute top-2 right-1 cursor-pointer" />
+            <XCircle
+              onClick={() => setOpenAddBudget(false)}
+              className="text-black absolute top-2 right-1 cursor-pointer"
+            />
 
             <div className="mt-10 p-5">
-              <h2 className="text-2xl font-semibold text-center mb-5">Add your budget</h2>
+              <h2 className="text-2xl font-semibold text-center mb-5">
+                Add your budget
+              </h2>
               <input
-              className="outline-none border  w-full rounded-lg p-2 h-10"
-               type="text" 
-              placeholder="Enter your budget " />
+                onChange={(e) => setBudgetAmount(Number(e.target.value))}
+                className="outline-none border  w-full rounded-lg p-2 h-10"
+                type="text"
+                placeholder="Enter your budget "
+              />
 
-              <button onClick={() => handleAddBudget()} className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer">Add Budget</button>
+              <button
+                onClick={() => handleAddBudget()}
+                className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer"
+              >
+                Add Budget
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {openAddMoreBudget && (
+        <div className="absolute w-full h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
+          <div className="bg-white w-[300px] lg:h-[180px] rounded-lg relative">
+            <XCircle
+              onClick={() => setOpenAddMoreBudget(false)}
+              className="text-black absolute top-2 right-1 cursor-pointer"
+            />
+
+            <div className="mt-10 p-5">
+              <h2 className="text-2xl font-semibold text-center mb-5">
+                Add more budget
+              </h2>
+
+              <label className="text-sm font-medium" htmlFor="Previous-budget">
+                Previous budget: {budget.budget}
+              </label>
+              <input
+                onChange={(e) => setBudgetAmount(Number(e.target.value))}
+                className="outline-none border  w-full rounded-lg p-2 h-10"
+                type="text"
+                placeholder="Enter your budget "
+              />
+
+              <button
+                onClick={() => handleAddMoreBudget()}
+                className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer"
+              >
+                Add Budget
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Toaster containerStyle={false} position="top-right" />
     </div>
   );
 };

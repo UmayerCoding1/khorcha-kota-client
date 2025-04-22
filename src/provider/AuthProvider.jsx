@@ -10,15 +10,18 @@ const AuthProvider = ({children}) => {
     const publicApi  = usePublicApi();
     const secureApi = useSecureApi();
 
-    const userRegister = (fullname,username,email,password) => {
-        return publicApi.post('/auth/register',{fullname,username,email,password})
+    const userRegister = async(fullname,username,email,password) => {
+        return await publicApi.post('/auth/register',{fullname,username,email,password})
     };
 
 
-    const userLogin = (email,password) => {
-        return publicApi.post('/auth/login', {email,password})
+    const userLogin = async(email,password) => {
+        return await publicApi.post('/auth/login', {email,password})
     }
 
+    const logout = async() => {
+        return await secureApi.post('/auth/logout');
+    }
 
     useEffect(() => {
         const getLoginUser  = async () => {
@@ -43,7 +46,8 @@ const AuthProvider = ({children}) => {
         setUser,
         user,
         userRegister,
-        userLogin
+        userLogin,
+        logout
     }
 
 

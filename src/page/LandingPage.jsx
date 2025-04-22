@@ -8,7 +8,7 @@ const LandingPage = () => {
             <Navbar />
             <Hero />
         
-        <footer>
+        <footer className='mt-5'>
            <h1 className='text-center'> &copy; Create By || Umayer Hossain</h1>
         </footer>
         </div>

@@ -8,20 +8,20 @@ import {
   ListCheck
 } from "lucide-react";
 import Logo from "../components/Logo";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-
+import toast, {Toaster} from 'react-hot-toast'
 const Dashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const {user} = useAuth();
-
+  const {user,logout,setUser} = useAuth();
+ const navigate = useNavigate();
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col justify-between h-screen">
       {/* Header */}
       <div className="flex items-center justify-between bg-white mb-2 shadow-lg w-full p-2">
         <div className="flex items-center gap-2">
@@ -69,12 +69,31 @@ const Dashboard = () => {
             <NavLink onClick={toggleDrawer} to={'/'} className="hover:text-gray-300 cursor-pointer flex items-center gap-2 text-xl font-medium"><LayoutDashboard/> Home</NavLink> <br />
             <NavLink onClick={toggleDrawer} to={'/add-expense'} className="hover:text-gray-300 cursor-pointer flex items-center gap-2 text-xl font-medium"><CirclePlus /> Add expense</NavLink> <br />
             <NavLink onClick={toggleDrawer} to={'/expense-list'} className="hover:text-gray-300 cursor-pointer flex items-center gap-2 text-xl font-medium"><ListCheck />Expense list</NavLink> <br />
-            <li className="text-red-500 cursor-pointer flex items-center gap-2 text-xl font-medium"><LogOut /> Logout</li>
+            <li onClick={() => logout().then(res => {
+                   if(res.data.success){
+                    toast.success(res.data.message, {duration: 1000});
+                    setUser('');
+                    localStorage.removeItem('token')
+
+                   }
+            }).catch(err => console.log(err))} className="text-red-500 cursor-pointer flex items-center gap-2 text-xl font-medium"><LogOut /> Logout</li>
           </ul>
         </div>
       </div>
 
-      <div className="w-full  bg-black lg:hidden fixed bottom-[-1px] left-0 z-10 flex items-center justify-between p-2 shadow-lg">
+     
+
+      {/* Main Content */}
+      <div
+        className={`transition-all duration-300 ${
+          isDrawerOpen ? "ml-64" : "ml-0"
+        }`}
+      >
+        <div className="p-4 pt-0 pb-20 h-screen overflow-auto">
+          <Outlet />
+        </div>
+
+        <div className="w-full  bg-black fixed bottom-0 left-0 z-50 lg:hidden flex items-center justify-between p-2 shadow-lg">
         <Link
           to={"/"}
           className="flex flex-col items-center justify-center lg:gap-1"
@@ -92,17 +111,8 @@ const Dashboard = () => {
           <p className="text-red-500 font-semibold">Logout</p>
         </div>
       </div>
-
-      {/* Main Content */}
-      <div
-        className={`transition-all duration-300 ${
-          isDrawerOpen ? "ml-64" : "ml-0"
-        }`}
-      >
-        <div className="p-4 pt-0">
-          <Outlet />
-        </div>
       </div>
+      <Toaster containerStyle={false} position="top-right"/>
     </div>
   );
 };

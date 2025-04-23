@@ -5,8 +5,8 @@ const BudgetDeatils = ({budgetDetails,setopenBudgetDetails}) => {
  
 
   return (
-    <div className="w-full h-screen absolute bg-black/70 top-0 left-0 z-50 flex flex-col items-center justify-center">
-      <div className="w-[500px] h-[350px]  max-h-[400px] overflow-auto bg-white text-black rounded-xl p-2">
+    <div className="w-full h-screen absolute bg-black/70 top-0 left-0 z-50 flex flex-col items-center justify-center p-2">
+      <div className="w-full lg:w-[500px] h-[350px]  max-h-[400px] overflow-auto bg-white text-black rounded-xl p-2">
         {budgetDetails ? budgetDetails?.map(((budget,inx) => (
             <div className="flex items-center  justify-between border p-2 my-2">
                <p>No: {inx + 1}</p>

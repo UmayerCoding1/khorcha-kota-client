@@ -17,7 +17,7 @@ const Loading = () => {
       </div>
 
       <div data-aos="fade-down" className="border-l-2 ml-3 px-4">
-        <h1 className="text-9xl lg:text-9xl">
+        <h1 className="text-8xl lg:text-9xl">
           Let's <br /> explore
         </h1>
       </div>

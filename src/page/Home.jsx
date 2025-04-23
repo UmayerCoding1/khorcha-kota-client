@@ -17,6 +17,10 @@ const Home = () => {
   const [openAddMoreBudget, setOpenAddMoreBudget] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState(0);
   const [openBudgetDetails, setopenBudgetDetails] = useState(false);
+  const { user } = useAuth();
+  const [budget, budgetRefetch] = useGetBudget();
+  const secureApi = useSecureApi();
+  const [expenses] = useGetExpense(searchValue);
 
   const currentDate = new Date();
   const options = {
@@ -27,11 +31,14 @@ const Home = () => {
   };
   const formattedDate = currentDate.toLocaleDateString("en-US", options);
   const month = currentDate.toLocaleString("default", { month: "long" });
+  const monthNumber = currentDate.toLocaleString("default", {
+    month: "numeric",
+  });
   const year = currentDate.toLocaleString("default", { year: "numeric" });
-  const { user } = useAuth();
-  const [budget, budgetRefetch] = useGetBudget();
-  const secureApi = useSecureApi();
-  const [expenses] = useGetExpense(searchValue);
+  const day = currentDate.toLocaleString("default", { day: "numeric" });
+  const amountDate = `${year}-${
+    monthNumber < 10 ? `0${monthNumber}` : monthNumber
+  }-${day}`;
 
   const memoizedExpenses = useMemo(() => expenses, [expenses]);
 
@@ -41,6 +48,12 @@ const Home = () => {
       mouth: month.toLowerCase(),
       year: year,
       budget: budgetAmount,
+      budgetInfo: [
+        {
+          addeddate: amountDate,
+          amount: budgetAmount,
+        },
+      ],
     };
 
     try {
@@ -60,6 +73,10 @@ const Home = () => {
     const nextBudgetData = {
       budgetId: budget._id,
       nextBudget: budgetAmount,
+      budgetInfo: {
+        addeddate: amountDate,
+        amount: budgetAmount,
+      },
     };
 
     try {
@@ -147,11 +164,19 @@ const Home = () => {
                   alt="avatar"
                 />
 
-                <button onClick={() => setopenBudgetDetails(true)} className="text-sm flex items-center gap-1 cursor-pointer mt-3">
+                <button
+                  onClick={() => setopenBudgetDetails(true)}
+                  className="text-sm flex items-center gap-1 cursor-pointer mt-3"
+                >
                   <Info size={14} /> Budget info
                 </button>
 
-                {openBudgetDetails && <BudgetDeatils budgetDetails={budget.budgetInfo} setopenBudgetDetails={setopenBudgetDetails}/>}
+                {openBudgetDetails && (
+                  <BudgetDeatils
+                    budgetDetails={budget?.budgetInfo}
+                    setopenBudgetDetails={setopenBudgetDetails}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col items-center justify-between gap-10">

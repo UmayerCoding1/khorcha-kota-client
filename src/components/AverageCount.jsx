@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 const AverageCount = ({ expenses }) => {
   const result = useMemo(() => {
     if (!expenses || expenses.length === 0) {
-      console.log("No expenses provided");
+
       return []; // Return an empty array if no expenses
     }
 
@@ -33,7 +33,6 @@ const AverageCount = ({ expenses }) => {
     }));
   }, [expenses]); // Recalculate only when `expenses` changes
 
-  console.log("Result:", result);
 
   if (!result || result.length === 0) {
     return <p>No data available</p>; // Show a fallback message if result is empty

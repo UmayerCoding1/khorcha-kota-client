@@ -7,7 +7,6 @@ import useAuth from './useAuth';
 const useGetBudget = () => {
     const secureApi = useSecureApi();
     const {user} = useAuth();
- console.log(user);
  
 
     const {data: budget, refetch: budgetRefetch} = useQuery({

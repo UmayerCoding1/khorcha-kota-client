@@ -27,7 +27,7 @@ const AuthProvider = ({children}) => {
         const getLoginUser  = async () => {
             try {
                 const res = await secureApi.get('/auth/login-user');
-                console.log(res.data);
+                
                 
                 if (res.data.success) {
                     setUser(res.data.user);

@@ -9,7 +9,7 @@ const useGetExpense = (searchValue) => {
   const currentDate = new Date();
   const month = currentDate.toLocaleString("default", { month: "long" });
   const year = currentDate.toLocaleString("default", { year: "numeric" });
- console.log(searchValue);
+
  
   const { data: expenses = [] } = useQuery({
     queryKey: ["data",searchValue],

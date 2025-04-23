@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import BasicPie from "../components/PaiChart";
 import ExpenseTable from "../components/ExpenseTable";
-import { XCircle } from "lucide-react";
+import { Info, XCircle } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import useGetBudget from "../hooks/useGetBudget";
 import useSecureApi from "../hooks/useSecureApi";
@@ -10,11 +10,13 @@ import useGetExpense from "../hooks/useGetExpense";
 import { Link } from "react-router-dom";
 import Search from "../components/Search";
 import AverageCount from "../components/AverageCount";
+import BudgetDeatils from "../components/BudgetDeatils";
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
   const [openAddBudget, setOpenAddBudget] = useState(false);
   const [openAddMoreBudget, setOpenAddMoreBudget] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState(0);
+  const [openBudgetDetails, setopenBudgetDetails] = useState(false);
 
   const currentDate = new Date();
   const options = {
@@ -84,12 +86,12 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (openAddBudget || openAddMoreBudget) {
+    if (openAddBudget || openAddMoreBudget || openBudgetDetails) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-  }, [openAddBudget, openAddMoreBudget]);
+  }, [openAddBudget, openAddMoreBudget, openBudgetDetails]);
 
   if (!memoizedExpenses) {
     return <p>Loading .. .. .</p>;
@@ -99,13 +101,13 @@ const Home = () => {
       <div className="lg:w-[70%]">
         <div className="mb-5 px-3 w-full lg:hidden">
           {budget ? (
-             <button
-             onClick={() => setOpenAddMoreBudget(true)}
-             className={`w-full bg-black text-white h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
-           >
-             {" "}
-             Add more buget
-           </button>
+            <button
+              onClick={() => setOpenAddMoreBudget(true)}
+              className={`w-full bg-black text-white h-10 rounded-xl font-orbitron font-semibold tracking-wider my-5 cursor-pointer`}
+            >
+              {" "}
+              Add more buget
+            </button>
           ) : (
             <button
               onClick={() => setOpenAddBudget(true)}
@@ -124,25 +126,33 @@ const Home = () => {
           </div>
 
           <div className=" max-h-[200px] overflow-auto ">
-          <AverageCount expenses={memoizedExpenses} />
-        </div>
+            <AverageCount expenses={memoizedExpenses} />
+          </div>
         </div>
         <div className="lg:flex  justify-between bg-white mb-2  w-full">
-          <div className="bg-black text-white p-5 rounded-md mb-7 lg:mb-0 lg:h-[180px]">
+          <div className="bg-black text-white p-5 rounded-md mb-7 lg:mb-0 lg:h-[190px]">
             <p className="text-sm text-gray-500 tracking-widest font-orbitron">
               {formattedDate}
             </p>
 
             <div className="flex items-center justify-between lg:gap-20 mt-5">
-              <img
-                className="w-40 h-40 rounded-full"
-                src={
-                  user && user.avatar
-                    ? user?.avatar
-                    : "https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
-                }
-                alt="avatar"
-              />
+              <div>
+                <img
+                  className="w-40 h-40 rounded-full"
+                  src={
+                    user && user.avatar
+                      ? user?.avatar
+                      : "https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
+                  }
+                  alt="avatar"
+                />
+
+                <button onClick={() => setopenBudgetDetails(true)} className="text-sm flex items-center gap-1 cursor-pointer mt-3">
+                  <Info size={14} /> Budget info
+                </button>
+
+                {openBudgetDetails && <BudgetDeatils budgetDetails={budget.budgetInfo} setopenBudgetDetails={setopenBudgetDetails}/>}
+              </div>
 
               <div className="flex flex-col items-center justify-between gap-10">
                 <div>

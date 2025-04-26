@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
-import Dashboard from '../page/Dashboard';
-import LandingPage from '../page/LandingPage';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import useAuth from '../hooks/useAuth';
 import Loading from '../components/Loading';
 
+// Lazy load heavy pages
+const Dashboard = lazy(() => import('../page/Dashboard'));
+const LandingPage = lazy(() => import('../page/LandingPage'));
+
 const Root = () => {
-    const [loading,setLoading] = useState(true);
-    const {user} = useAuth();
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-    setTimeout(() => setLoading(false),3000);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000); // less than 3s feels smoother
+    return () => clearTimeout(timer); // clean up
+  }, []);
 
-    
-    return (
-        <div className='font-poppins'>
-          {loading ? <Loading/> : <>
-            {user ?<>
-                <Dashboard />
-            </> : <LandingPage />}
-          </>}
+  // if (loading) return <Loading />;
 
-        </div>
-    );
+  return (
+    <div className="font-poppins">
+      <Suspense fallback={<Loading />}>
+        {user ? <Dashboard /> : <LandingPage />}
+      </Suspense>
+    </div>
+  );
 };
 
 export default Root;

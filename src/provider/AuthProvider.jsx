@@ -10,13 +10,13 @@ const AuthProvider = ({children}) => {
     const publicApi  = usePublicApi();
     const secureApi = useSecureApi();
 
-    const userRegister = async(fullname,username,email,password) => {
-        return await publicApi.post('/auth/register',{fullname,username,email,password})
+    const userRegister = async(fullname,number,password) => {
+        return await publicApi.post('/auth/register',{fullname,number,password})
     };
 
 
-    const userLogin = async(email,password) => {
-        return await publicApi.post('/auth/login', {email,password})
+    const userLogin = async(number,password) => {
+        return await publicApi.post('/auth/login', {number,password})
     }
 
     const logout = async() => {

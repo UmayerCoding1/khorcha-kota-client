@@ -8,8 +8,9 @@ import Search from "../components/Search";
 
 const ExpenseList = () => {
    const [searchValue, setSearchValue] = useState("");
-    const [expenses] = useGetExpense(searchValue);
-   
+    const [expenses,expenseRefetch] = useGetExpense(searchValue);
+    
+    
     const handleFindSearchValue = (value) => {
       setSearchValue(value)
       
@@ -28,7 +29,7 @@ const ExpenseList = () => {
       </div>
 
       <div className="lg:w-[70%] max-h-screen overflow-auto">
-        <ExpenseTable data={expenses}/>
+        <ExpenseTable data={expenses} expenseRefetch={expenseRefetch}/>
       </div>
     </div>
   );

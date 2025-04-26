@@ -17,10 +17,11 @@ const Home = () => {
   const [openAddMoreBudget, setOpenAddMoreBudget] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState(0);
   const [openBudgetDetails, setopenBudgetDetails] = useState(false);
+  const[budgetAdding,setBudgetAdding] = useState(false);
   const { user } = useAuth();
   const [budget, budgetRefetch] = useGetBudget();
   const secureApi = useSecureApi();
-  const [expenses] = useGetExpense(searchValue);
+  const [expenses,expenseRefetch] = useGetExpense(searchValue);
 
   const currentDate = new Date();
   const options = {
@@ -70,6 +71,7 @@ const Home = () => {
   };
 
   const handleAddMoreBudget = async () => {
+    setBudgetAdding(true);
     const nextBudgetData = {
       budgetId: budget._id,
       nextBudget: budgetAmount,
@@ -87,6 +89,7 @@ const Home = () => {
         setBudgetAmount(0);
         toast.success(res.data.message, { duration: 1000 });
         budgetRefetch();
+        setBudgetAdding(false);
       }
 
       if (!res.data.success) {
@@ -109,6 +112,8 @@ const Home = () => {
       document.body.style.overflow = "";
     }
   }, [openAddBudget, openAddMoreBudget, openBudgetDetails]);
+
+
 
   if (!memoizedExpenses) {
     return <p>Loading .. .. .</p>;
@@ -236,7 +241,7 @@ const Home = () => {
           </div>
 
           <div className="max-h-[300px] overflow-scroll">
-            <ExpenseTable data={expenses} />
+            <ExpenseTable data={expenses} expenseRefetch={expenseRefetch}/>
           </div>
         </div>
       </div>
@@ -325,12 +330,17 @@ const Home = () => {
                 placeholder="Enter your budget "
               />
 
-              <button
+             {budgetAdding ?  <button
+                
+                className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer"
+              >
+                Loading ....
+              </button> :  <button
                 onClick={() => handleAddMoreBudget()}
                 className="w-full mt-5 bg-primary  text-sm p-2 rounded-lg text-white font-medium cursor-pointer"
               >
                 Add Budget
-              </button>
+              </button>}
             </div>
           </div>
         </div>

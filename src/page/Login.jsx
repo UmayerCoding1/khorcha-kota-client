@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import toast, {Toaster} from 'react-hot-toast'
 const Login = () => {
   const [loginData,setLoginData] = useState({
-    email:'',
+    number:'',
     password: ''
   });
 
@@ -17,7 +17,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    userLogin(loginData.email,loginData.password)
+    userLogin(loginData.number,loginData.password)
     .then(res => {
       if(res.data.success){
         localStorage.setItem('token', res.data.token);
@@ -40,23 +40,22 @@ const Login = () => {
       <Logo />
 
       <div  className="flex justify-center items-center h-screen bg-cover bl">
-        <div className="bg-[#9797979e] text-white p-8 rounded-lg shadow-lg max-w-sm w-full ">
+        <div className="bg-[#fff] text-black p-8 rounded-lg shadow-lg max-w-sm w-full ">
           <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
-                Email
+              <label className="block text-black text-sm font-bold mb-2" htmlFor="email">
+                Phone number
               </label>
               <input
-              onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+              onChange={(e) => setLoginData({...loginData, number: e.target.value})}
+                type="number"
+                placeholder="Enter your number"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
             <div className="mb-6">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="password">
+              <label className="block text-black text-sm font-bold mb-2" htmlFor="password">
                 Password
               </label>
               <input
@@ -64,12 +63,12 @@ const Login = () => {
                 type="password"
                 id="password"
                 placeholder="Enter your password"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
             <button
               type="submit"
-              className="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              className="bg-primary hover:bg-blue-700 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
             >
               Login
             </button>

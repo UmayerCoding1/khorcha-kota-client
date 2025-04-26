@@ -11,7 +11,7 @@ const useGetExpense = (searchValue) => {
   const year = currentDate.toLocaleString("default", { year: "numeric" });
 
  
-  const { data: expenses = [] } = useQuery({
+  const { data: expenses = [], refetch: expenseRefetch } = useQuery({
     queryKey: ["data",searchValue],
     enabled: !!user?._id,
     queryFn: async () => {
@@ -22,7 +22,7 @@ const useGetExpense = (searchValue) => {
     },
   });
 
-  return [expenses];
+  return [expenses,expenseRefetch];
 };
 
 export default useGetExpense;
